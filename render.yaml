@@ -1,0 +1,37 @@
+services:
+  - type: web
+    name: mineguard-backend
+    env: node
+    rootDir: backend
+    buildCommand: npm install && npm run build
+    startCommand: npm run start
+    envVars:
+      - key: PORT
+        value: 4000
+      - key: JWT_SECRET
+        value: mineguard-demo-secret
+      - key: CORS_ORIGIN
+        value: https://mineguard-frontend.onrender.com
+      - key: SIMULATOR_INTERVAL_MS
+        value: 3000
+
+  - type: web
+    name: mineguard-ml
+    env: python
+    rootDir: ml-service
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app:app --host 0.0.0.0 --port 8000
+    envVars:
+      - key: PORT
+        value: 8000
+
+  - type: static
+    name: mineguard-frontend
+    rootDir: frontend
+    buildCommand: npm install && npm run build
+    staticPublishPath: dist
+    envVars:
+      - key: VITE_API_URL
+        value: https://mineguard-backend.onrender.com
+      - key: VITE_SOCKET_URL
+        value: https://mineguard-backend.onrender.com
